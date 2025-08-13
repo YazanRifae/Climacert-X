@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Climacert-X — Product Requirements Document (PRD) v1.1</title>
+  <meta name="description" content="Climacert-X PRD v1.1 — continuous, standards-aligned health & sustainability certification platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0c0f;
+      --bg-elev: #12141a;
+      --panel: #ffffff;
+      --text: #0b0c0f;
+      --subtle: #5b6170;
+      --accent: #2563eb;
+      --accent-2: #10b981;
+      --border: #e5e7eb;
+      --badge: #f3f4f6;
+      --badge-text: #111827;
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+    }
+    [data-theme="dark"] {
+      --bg: #0b0c0f;
+      --bg-elev: #0f1117;
+      --panel: #12141a;
+      --text: #e5e7eb;
+      --subtle: #9aa1af;
+      --accent: #4f9cff;
+      --accent-2: #34d399;
+      --border: #1f2430;
+      --badge: #1f2430;
+      --badge-text: #cbd5e1;
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elev) 100%);
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    header.site {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+      background: color-mix(in oklab, var(--bg-elev) 80%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    header.site .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+    }
+    .title {
+      display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    }
+    .title h1 { font-size: 20px; margin: 0; font-weight: 700; }
+    .title .ver { color: var(--subtle); font-weight: 500; }
+    .actions { display: flex; gap: 10px; align-items: center; }
+    .btn {
+      display: inline-flex; gap: 8px; align-items: center; justify-content: center;
+      padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border);
+      color: var(--text); background: var(--panel); cursor: pointer; font-weight: 600;
+    }
+    .btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 30%, transparent); }
+    .toc {
+      position: sticky; top: 68px; height: calc(100vh - 88px); overflow: auto;
+      padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel);
+    }
+    .toc h3 { margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--subtle); }
+    .toc nav ul { list-style: none; margin: 0; padding: 0; }
+    .toc nav li { margin: 4px 0; }
+    .toc nav a { color: var(--text); text-decoration: none; font-size: 14px; }
+    .toc nav a:hover { color: var(--accent); }
+    .toc nav ul ul { margin-left: 12px; border-left: 1px dashed var(--border); padding-left: 12px; }
+    main.article {
+      border: 1px solid var(--border); border-radius: 12px; background: var(--panel);
+      padding: 28px; box-shadow: 0 10px 30px color-mix(in oklab, #000 15%, transparent);
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
+    .badge { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius: 999px; background: var(--badge); color: var(--badge-text); border:1px solid var(--border); font-size: 12px; }
+    .badge .dot { width:8px; height:8px; border-radius: 999px; background: var(--accent); }
+    .badge.warn .dot { background: #f59e0b; }
+    .badge.ok .dot { background: var(--accent-2); }
+    h1 { margin-top: 0; }
+    h2 { margin-top: 32px; border-top: 1px dashed var(--border); padding-top: 20px; }
+    h2, h3 { scroll-margin-top: 80px; }
+    .lead { font-size: 16px; color: var(--subtle); }
+    ul, ol { line-height: 1.7; }
+    pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    pre { background: var(--code-bg); color: var(--code-text); padding: 12px 14px; border-radius: 10px; overflow: auto; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+    thead th { position: sticky; top: 0; background: color-mix(in oklab, var(--panel) 85%, #0000); }
+    tbody tr:hover { background: color-mix(in oklab, var(--panel) 80%, #0000); }
+    .section-header { display:flex; align-items: baseline; gap: 10px; }
+    .anchor-link { opacity: 0; margin-left: 8px; font-size: 0.9em; }
+    h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+    footer.site { max-width: 1200px; margin: 24px auto; color: var(--subtle); padding: 0 24px 24px; }
+    .callout { border:1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 12px 14px; background: color-mix(in oklab, var(--panel) 95%, #0000); }
+    .print-note { display: none; }
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc { position: relative; top: 0; height: auto; }
+    }
+    @media print {
+      header.site, .toc, .actions, .anchor-link { display: none !important; }
+      body { background: #fff; }
+      main.article { border: none; box-shadow: none; }
+      .print-note { display: block; font-size: 12px; color: #555; }
+      h2 { break-before: page; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="inner">
+      <div class="title">
+        <h1>Climacert-X — PRD</h1>
+        <span class="ver">v1.1</span>
+      </div>
+      <div class="actions">
+        <button class="btn" id="themeToggle" title="Toggle theme">🌗 Theme</button>
+        <button class="btn" onclick="window.print()" title="Print / Save as PDF">🖨️ Print</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="toc">
+      <h3>Contents</h3>
+      <nav id="toc"></nav>
+      <div class="callout" style="margin-top:12px; font-size: 13px;">
+        Internet is required to render Mermaid diagrams. Use Print to export PDF.
+      </div>
+    </aside>
+
+    <main id="content" class="article" aria-label="Climacert-X PRD">
+      <header>
+        <div class="meta">
+          <span class="badge"><span class="dot warn"></span> Status: Draft for review</span>
+          <span class="badge"><span class="dot ok"></span> Owner: Product (Climacert-X)</span>
+          <span class="badge">Last updated: 14 Aug 2025</span>
+        </div>
+        <p class="lead">Climacert-X delivers <strong>continuous</strong>, standards-aligned health &amp; sustainability certification for occupied spaces using IoT telemetry, automated scoring, and auditability.</p>
+      </header>
+
+      <section id="purpose-goals">
+        <h2 class="section-header">1) Purpose &amp; Goals <a class="anchor-link" href="#purpose-goals">#</a></h2>
+        <p><strong>Top goals</strong></p>
+        <ul>
+          <li>Reduce quote-to-certification lead time by <strong>10×</strong> vs periodic audits.</li>
+          <li>Maintain continuous compliance with a <strong>public certificate page</strong> per facility.</li>
+          <li>Lower total cost via <strong>AI BoQ</strong>, self-serve onboarding, and templated thresholds.</li>
+          <li>Provide <strong>auditable scoring</strong> with exportable reports for internal/external use.</li>
+        </ul>
+      </section>
+
+      <section id="personas">
+        <h2 class="section-header">2) Personas <a class="anchor-link" href="#personas">#</a></h2>
+        <ul>
+          <li><strong>Portfolio Admin</strong> — Owns multiple facilities; budget, compliance, certification status.</li>
+          <li><strong>Facility Manager</strong> — Day-to-day ops; onboarding devices; reacts to alerts.</li>
+          <li><strong>Sustainability Lead/ESG</strong> — Needs reports and mapping to popular frameworks.</li>
+          <li><strong>Installer/Partner</strong> — Performs deployment, validation and handover.</li>
+          <li><strong>Public Visitor</strong> — Scans QR; sees friendly certificate &amp; last 30-day summary.</li>
+        </ul>
+      </section>
+
+      <section id="problem-statement">
+        <h2 class="section-header">3) Problem Statement <a class="anchor-link" href="#problem-statement">#</a></h2>
+        <p>Environmental conditions (air, water, cold storage, odors, vape events) are usually checked by <strong>episodic audits</strong>, giving poor coverage and stale proofs. Operators need:</p>
+        <ol>
+          <li><strong>Always-on measurement</strong> mapped to clear thresholds.</li>
+          <li><strong>Simple pricing + BoQ</strong> to start quickly.</li>
+          <li><strong>Transparent scoring</strong> with automated reporting and public trust signals.</li>
+        </ol>
+      </section>
+
+      <section id="scope">
+        <h2 class="section-header">4) Scope (v1.1) <a class="anchor-link" href="#scope">#</a></h2>
+        <p><strong>In scope</strong></p>
+        <ul>
+          <li>AI BoQ + checkout (quote, carts, price books, shipping bands, tax)</li>
+          <li>Onboarding (assets/devices import, auto-templates, validation)</li>
+          <li>Scoring engine (threshold-based, shift-aware, monthly level)</li>
+          <li>Dashboards (status, trends), Alerts (rules/severity/routing), Reports (PDF/CSV)</li>
+          <li>Public certificate page (QR, last 30 days, level badge)</li>
+          <li>Admin: price books, threshold templates, roles, org/facility management</li>
+        </ul>
+        <p><strong>Out of scope (v1.1)</strong></p>
+        <ul>
+          <li>Automated field commissioning (zero-touch), complex digital twins</li>
+          <li>Formal WELL/LEED submission packages (provide CSV/PDF exports only)</li>
+          <li>Computer-vision anomaly detection beyond vape event heuristics</li>
+        </ul>
+      </section>
+
+      <section id="success-metrics">
+        <h2 class="section-header">5) Success Metrics (MVP+) <a class="anchor-link" href="#success-metrics">#</a></h2>
+        <ul>
+          <li><strong>Lead time:</strong> Payment → “Certification Active” ≤ <strong>7 days</strong> for ≤ 20 devices</li>
+          <li><strong>Uptime:</strong> ≥ <strong>99.9%</strong> platform; ≥ <strong>95%</strong> devices online during active shifts after week 2</li>
+          <li><strong>Quality:</strong> Vape/odor false positives <strong>&lt; 2%</strong> (rolling 30-day)</li>
+          <li><strong>Satisfaction:</strong> <strong>NPS ≥ +30</strong> from admins within 60 days of go-live</li>
+        </ul>
+      </section>
+
+      <section id="assumptions">
+        <h2 class="section-header">6) Assumptions <a class="anchor-link" href="#assumptions">#</a></h2>
+        <ul>
+          <li>Devices provide <strong>timestamped</strong> readings with stable units and regional bands (EU868/US915).</li>
+          <li>Facilities define <strong>active shifts</strong> (hours/days) used for scoring windows.</li>
+          <li>Price books are <strong>versioned</strong> and region-aware with discounts for annual billing.</li>
+          <li>Certification term is <strong>monthly-rolling</strong> (displayed) with <strong>multi-year contract</strong> (billing).</li>
+        </ul>
+      </section>
+
+      <section id="functional-requirements">
+        <h2 class="section-header">7) Functional Requirements <a class="anchor-link" href="#functional-requirements">#</a></h2>
+        <h3 id="ai-boq">7.1 Application &amp; Quote (AI BoQ) <a class="anchor-link" href="#ai-boq">#</a></h3>
+        <ul>
+          <li><strong>Input capture:</strong> Chat + form with conditional logic by facility type.</li>
+          <li><strong>Price books:</strong> Versioned by region/currency; BoQ stores <code>priceBookId</code> and <code>version</code>.</li>
+          <li><strong>Totals:</strong> Show 3-year, annual, and monthly views; annual may apply discount.</li>
+          <li><strong>Rounding rules:</strong> Device counts round <strong>up</strong>; currency to <strong>2 decimals</strong>.</li>
+          <li><strong>Shipping &amp; tax:</strong> Region bands and VAT/GST rules; display itemized.</li>
+          <li><strong>Edge cases:</strong> Multiple facilities per org; zero pools/tanks; very small sites; free-trial flags.</li>
+          <li><strong>Quote output:</strong> Shareable link with expiry, saved to org; <strong>idempotent</strong> quote API.</li>
+        </ul>
+        <h3 id="checkout">7.2 Checkout <a class="anchor-link" href="#checkout">#</a></h3>
+        <ul>
+          <li>Create invoice + subscription (monthly/annual), accept ToS, store billing profile.</li>
+          <li>Generates <strong>order</strong> for hardware + services and <strong>subscription</strong> for software/connectivity.</li>
+          <li>Emails <strong>proforma</strong> and <strong>invoice</strong>; webhooks to fulfillment.</li>
+        </ul>
+        <h3 id="onboarding-validation">7.3 Onboarding &amp; Validation <a class="anchor-link" href="#onboarding-validation">#</a></h3>
+        <ul>
+          <li>Import assets/devices from BoQ or CSV; map devices to <strong>approved templates</strong>.</li>
+          <li><strong>Validation checks:</strong> last reading &lt; 24h; unit compatibility; region OK; min RSSI/SNR (LoRa); battery level; gateway reachability.</li>
+          <li><strong>Activation gate:</strong> All required parameters available in <strong>active shifts</strong> → Certificate <strong>Pending</strong> → <strong>Active</strong>.</li>
+        </ul>
+        <h3 id="scoring-engine">7.4 Scoring Engine <a class="anchor-link" href="#scoring-engine">#</a></h3>
+        <ul>
+          <li>For each parameter in <strong>active shifts</strong>, compute:
+            <ul>
+              <li><code>total_p</code> = #readings; <code>within_p</code> = #within threshold; <code>%within_p = within_p / total_p</code>.</li>
+            </ul>
+          </li>
+          <li><strong>IAQ/Odor:</strong> facility %within = sum over parameters / sum totals.</li>
+          <li><strong>Cold/Water:</strong> stricter gate (e.g., <strong>%within ≥ 99%</strong>).</li>
+          <li><strong>Vape events:</strong> cap <strong>≤ 10% of days</strong> in month (any event counts that day).</li>
+          <li>Monthly level gates (e.g., <strong>Silver ≥70%</strong>, <strong>Gold ≥80%</strong>, <strong>Platinum ≥90%</strong>) with vape cap applied.</li>
+          <li><strong>Lifecycle:</strong> Active ↔ Paused ↔ Under Maintenance; monthly re-evaluation.</li>
+        </ul>
+        <h3 id="dashboards-alerts">7.5 Dashboards &amp; Alerts <a class="anchor-link" href="#dashboards-alerts">#</a></h3>
+        <ul>
+          <li><strong>Dashboards:</strong> status (online/offline), trends, %within, incidents, asset timelines.</li>
+          <li><strong>Alerts:</strong> rules per parameter; severities (Warning/Critical); channels (email, SMS, webhook); escalation; auto-close on recovery.</li>
+        </ul>
+        <h3 id="reports-certificates">7.6 Reports &amp; Public Certificates <a class="anchor-link" href="#reports-certificates">#</a></h3>
+        <ul>
+          <li><strong>Reports:</strong> PDF &amp; CSV with month summary, breaches, uptime, device list.</li>
+          <li><strong>Public:</strong> QR page showing level, last 30-day %within, parameters measured, date of last evaluation.</li>
+        </ul>
+        <h3 id="admin">7.7 Admin <a class="anchor-link" href="#admin">#</a></h3>
+        <ul>
+          <li>Roles (Org Admin, Facility Manager, Viewer).</li>
+          <li>Manage price books, threshold templates, integrations (webhooks), SSO (OIDC).</li>
+        </ul>
+      </section>
+
+      <section id="non-functional">
+        <h2 class="section-header">8) Non-Functional Requirements <a class="anchor-link" href="#non-functional">#</a></h2>
+        <ul>
+          <li><strong>Uptime:</strong> 99.9% platform SLO; <strong>graceful degradation</strong> for reporting.</li>
+          <li><strong>Latency:</strong> ingest P95 &lt; 3s; dashboards P95 &lt; 2s for 30-day queries; alert creation &lt; 2s.</li>
+          <li><strong>Scalability:</strong> multi-tenant; partition by org; time-series storage with downsampling.</li>
+          <li><strong>Security &amp; Privacy:</strong> SSO (OIDC), RBAC, least privilege, PII minimization, data residency by region, at-rest &amp; in-transit encryption, tamper-evident audit logs.</li>
+          <li><strong>Retention:</strong> raw 12 months (configurable), aggregates 36 months+.</li>
+          <li><strong>Observability:</strong> traces, logs, metrics, SLOs; incident runbooks and postmortems.</li>
+          <li><strong>Accessibility &amp; i18n:</strong> WCAG 2.1 AA; multi-language UI copy.</li>
+        </ul>
+      </section>
+
+      <section id="standards-thresholds">
+        <h2 class="section-header">9) Standards &amp; Thresholds (defaults; editable per template) <a class="anchor-link" href="#standards-thresholds">#</a></h2>
+        <blockquote>These serve as <strong>authoritative defaults</strong> and can be versioned/overridden by admins.</blockquote>
+        <ul>
+          <li><strong>PM2.5 / PM10 / O₃ / CO₂ / TVOC / Formaldehyde</strong> — use contemporary public guidance and operational targets appropriate for occupied indoor environments.</li>
+          <li><strong>Water</strong> (turbidity, residual chlorine, pH) — operational targets suitable for potable and pool contexts.</li>
+          <li><strong>Cold storage</strong> — food/med compliance ranges; alert on out-of-range excursions with dwell times.</li>
+          <li><strong>Odor</strong> — nuisance thresholds; count exceedances by duration.</li>
+          <li><strong>Vape</strong> — heuristic fusion (particle + CO peaks + duration) to flag likely events.</li>
+        </ul>
+        <p><em>(Exact numeric defaults can be loaded from regional templates and updated per release.)</em></p>
+      </section>
+
+      <section id="parameter-device-mapping">
+        <h2 class="section-header">10) Parameter–Device Mapping <a class="anchor-link" href="#parameter-device-mapping">#</a></h2>
+        <ul>
+          <li>Template bundles (e.g., <strong>IAQ Basic/Plus</strong>, <strong>Cold Storage</strong>, <strong>Water</strong>, <strong>Odor/Vape</strong>).</li>
+          <li>Approved SKUs per parameter; region bands (EU868/US915); min sampling intervals.</li>
+          <li>Device caps per gateway; recommended placement density per area/floor.</li>
+        </ul>
+      </section>
+
+      <section id="data-model">
+        <h2 class="section-header">11) Data Model (simplified) <a class="anchor-link" href="#data-model">#</a></h2>
+        <ul>
+          <li><strong>Organization</strong>(id, name, region)</li>
+          <li><strong>Facility</strong>(id, org_id, type, address, area_ft², floors, shifts)</li>
+          <li><strong>Asset</strong>(id, facility_id, zone, type)</li>
+          <li><strong>Device</strong>(id, asset_id, type, sku, region, online_state, last_seen)</li>
+          <li><strong>Reading</strong>(device_id, parameter, ts, value, unit)</li>
+          <li><strong>ThresholdTemplate</strong>(id, name, parameter, unit, limit, direction, shift, version)</li>
+          <li><strong>PriceBook</strong>(id, region, currency, version, items[])</li>
+          <li><strong>BoQ</strong>(id, pricebook_id, inputs, lines[], totals)</li>
+          <li><strong>Certificate</strong>(id, facility_id, month, level, score, vape_days, status)</li>
+          <li><strong>Alert</strong>(id, facility_id, parameter, severity, opened_at, closed_at, ack_user)</li>
+        </ul>
+      </section>
+
+      <section id="apis">
+        <h2 class="section-header">12) APIs (selected) <a class="anchor-link" href="#apis">#</a></h2>
+        <ul>
+          <li><code>POST /boq/quote</code> → returns lines + 3-year totals; <strong>idempotency key</strong></li>
+          <li><code>POST /checkout/session</code> → invoice + subscription; webhooks for fulfillment</li>
+          <li><code>POST /onboarding/import</code> → create assets/devices from BoQ/CSV</li>
+          <li><code>POST /cert/start</code> → validate devices vs BoQ → Pending → Active</li>
+          <li><code>POST /readings</code> → batch/stream ingestion; unit coercion &amp; rejection on mismatch</li>
+          <li><code>GET /cert/:id/report</code> → PDF + CSV exports</li>
+          <li><code>POST /alerts/webhook</code> → outbound integration (e.g., pager, ticketing)</li>
+        </ul>
+        <p><strong>Error contracts</strong></p>
+        <ul>
+          <li><code>422_UNPROCESSABLE_ENTITY</code> for unit/parameter mismatches</li>
+          <li><code>409_CONFLICT</code> for idempotency collisions</li>
+          <li><code>429_TOO_MANY_REQUESTS</code> with <code>Retry-After</code></li>
+        </ul>
+      </section>
+
+      <section id="user-stories">
+        <h2 class="section-header">13) User Stories &amp; Acceptance Criteria (sample) <a class="anchor-link" href="#user-stories">#</a></h2>
+        <p><strong>US-01: Generate AI BoQ</strong><br>
+        As a Portfolio Admin, I can enter facility data and receive an itemized BoQ with 3-year totals so that I can approve a budget.</p>
+        <p><strong>AC:</strong></p>
+        <ul>
+          <li>Given valid inputs, BoQ returns device counts rounded up, with shipping/tax itemized.</li>
+          <li>BoQ links to <strong>priceBookId</strong> and <strong>version</strong>.</li>
+          <li>Shareable quote link expires per policy.</li>
+        </ul>
+        <p><strong>US-05: Start Certification</strong><br>
+        As a Facility Manager, I can start certification once devices pass validation.</p>
+        <p><strong>AC:</strong></p>
+        <ul>
+          <li>All required parameters present with recent readings (&lt; 24h) in active shifts.</li>
+          <li>Device/gateway region &amp; RSSI checks pass.</li>
+          <li>On success, status: Pending → Active; otherwise Under Maintenance with reasons.</li>
+        </ul>
+        <p><strong>US-09: View Public Certificate</strong><br>
+        As a Visitor, I can scan a QR and view a simple page with level and last 30-day metrics.</p>
+        <p><strong>AC:</strong></p>
+        <ul>
+          <li>Page shows month, level, parameters measured, last-update time.</li>
+        </ul>
+      </section>
+
+      <section id="charts">
+        <h2 class="section-header">14) Charts <a class="anchor-link" href="#charts">#</a></h2>
+        <h3 id="chart-cost-share">14.1 Cost Share (One-Time) <a class="anchor-link" href="#chart-cost-share">#</a></h3>
+        <div class="mermaid">
+        pie title OTC Cost Share (USD)
+            "IAQ sensors" : 4185
+            "Odor sensors" : 8835
+            "Turbidity sensors" : 2945
+            "Cold Storage" : 556
+            "LoRa gateways" : 12885
+            "Installation" : 1025
+            "Delivery" : 975
+            "Certification" : 395
+        </div>
+        <h3 id="chart-recurring">14.2 Recurring Costs (Annual) <a class="anchor-link" href="#chart-recurring">#</a></h3>
+        <div class="mermaid">
+        pie title Annual Recurring Costs (USD)
+            "Connectivity" : 2475
+            "Software licenses" : 507
+        </div>
+        <h3 id="chart-device-mix">14.3 Device Mix (Units) <a class="anchor-link" href="#chart-device-mix">#</a></h3>
+        <div class="mermaid">
+        pie title Devices by Type
+            "IAQ" : 15
+            "Odor" : 15
+            "Turbidity" : 5
+            "Cold Storage" : 4
+            "Gateways" : 15
+        </div>
+        <h3 id="chart-gantt">14.4 Delivery Timeline (Gantt) <a class="anchor-link" href="#chart-gantt">#</a></h3>
+        <div class="mermaid">
+        gantt
+            title MVP Rollout Timeline
+            dateFormat  YYYY-MM-DD
+            section Quote & Checkout
+            AI BoQ & Price Books        :done,    q1, 2025-08-01, 7d
+            Checkout & Billing          :active,  q2, 2025-08-08, 7d
+            section Onboarding
+            Import & Validation         :         q3, 2025-08-15, 10d
+            section Scoring & Cert
+            Scoring Engine (MVP)        :         q4, 2025-08-25, 10d
+            Public Certificate Page     :         q5, 2025-09-04, 5d
+            section Ops
+            Alerts & Reports            :         q6, 2025-09-09, 10d
+        </div>
+      </section>
+
+      <section id="operational-flows">
+        <h2 class="section-header">15) Operational Flows <a class="anchor-link" href="#operational-flows">#</a></h2>
+        <h3 id="flow-end-to-end">15.1 Application → AI BoQ → Checkout → Onboarding → Validation → Certification <a class="anchor-link" href="#flow-end-to-end">#</a></h3>
+        <div class="mermaid">
+        flowchart TD
+            A[Visitor clicks 'Get Certified'] --> B{AI Chatbot + Form}
+            B -->|Facility/Type/Area| C[BoQ Builder]
+            C --> D[Price Book & Shipping]
+            D --> E[BoQ Summary & 3-yr totals]
+            E --> F{Checkout?}
+            F -->|Yes| G[Payment + Invoice]
+            F -->|Save Quote| H[Shareable Link]
+            G --> I[Onboarding: Create Org/Facility/Assets/Devices]
+            I --> J[Device Validation (24h freshness, units, region, RSSI)]
+            J -->|Pass| K[Certificate Pending]
+            K --> L[Active (start month)]
+            J -->|Fail| M[Under Maintenance → Remediation]
+        </div>
+        <h3 id="flow-sequence">15.2 Scoring Pipeline (sequence) <a class="anchor-link" href="#flow-sequence">#</a></h3>
+        <div class="mermaid">
+        sequenceDiagram
+            participant Dev as Device
+            participant Ingest as Ingestion API
+            participant TS as Time-Series DB
+            participant Score as Scoring Engine
+            participant Cert as Certificate Service
+
+            Dev->>Ingest: POST /readings (batch/stream)
+            Ingest->>TS: Validate units, write readings
+            Score->>TS: Query window (active shifts)
+            TS-->>Score: readings per parameter
+            Score->>Cert: %within, vape_days, level
+            Cert-->>Score: status (Active/Paused/Maintenance)
+        </div>
+        <h3 id="flow-states">15.3 Certification Lifecycle (state machine) <a class="anchor-link" href="#flow-states">#</a></h3>
+        <div class="mermaid">
+        stateDiagram-v2
+            [*] --> Pending
+            Pending --> Active: Validation Passed
+            Pending --> Under_Maintenance: Validation Failed
+            Active --> Paused: Manual Pause / Device Replacement
+            Paused --> Active: Resume (next month)
+            Active --> Downgraded: %within drop
+            Active --> Upgraded: %within rise
+            Active --> Expired: Subscription End / Term
+            Downgraded --> Active
+            Upgraded --> Active
+            Expired --> [*]
+        </div>
+        <h3 id="flow-alerts">15.4 Alerting &amp; Escalation <a class="anchor-link" href="#flow-alerts">#</a></h3>
+        <div class="mermaid">
+        flowchart TD
+            A[Parameter Breach Detected] --> B[Rule Engine]
+            B -->|Threshold breach| C[Create Alert]
+            C --> D{Severity?}
+            D -->|Critical| E[SMS/Email + Pager + Webhook]
+            D -->|Warning| F[Email + In-app]
+            C --> G[Alert Feed + Asset Timeline]
+            G --> H[User Acknowledges/Comments]
+            H --> I[Auto-close on Recovery]
+        </div>
+      </section>
+
+      <section id="analytics-telemetry">
+        <h2 class="section-header">16) Analytics &amp; Telemetry <a class="anchor-link" href="#analytics-telemetry">#</a></h2>
+        <ul>
+          <li>Funnel (quote → checkout → onboarding → active).</li>
+          <li>Device uptime, data latency, alert MTTA/MTTR.</li>
+          <li>Breach heatmaps by parameter/time/zone.</li>
+          <li>Report exports count, public page visits, QR scans.</li>
+        </ul>
+      </section>
+
+      <section id="security-compliance">
+        <h2 class="section-header">17) Security &amp; Compliance <a class="anchor-link" href="#security-compliance">#</a></h2>
+        <ul>
+          <li>SSO (OIDC), RBAC; audit logs (tamper-evident).</li>
+          <li>Encryption at rest/in transit; scoped API tokens and webhooks.</li>
+          <li>Data residency per org region; DPIA where applicable.</li>
+          <li>Backup/restore RPO=24h, RTO=8h.</li>
+        </ul>
+      </section>
+
+      <section id="risks-mitigations">
+        <h2 class="section-header">18) Risks &amp; Mitigations <a class="anchor-link" href="#risks-mitigations">#</a></h2>
+        <ul>
+          <li><strong>Sensor drift / calibration</strong> → approved SKUs, calibration reminders, drift detection.</li>
+          <li><strong>Data gaps</strong> → backfill windows, visible flags, do-not-score for inactive periods.</li>
+          <li><strong>False vape positives</strong> → fuse particle + CO peaks + min duration; retrain heuristics.</li>
+          <li><strong>Standards change</strong> → versioned templates; re-score with new versions.</li>
+        </ul>
+      </section>
+
+      <section id="rollout-plan">
+        <h2 class="section-header">19) Rollout Plan <a class="anchor-link" href="#rollout-plan">#</a></h2>
+        <ol>
+          <li><strong>Internal pilot</strong> (1–2 facilities) — validate onboarding &amp; scoring.</li>
+          <li><strong>Design partner beta</strong> (≤10 facilities) — iterate alerts/reporting.</li>
+          <li><strong>Public GA</strong> — pricing page + templates per region; support playbooks.</li>
+        </ol>
+      </section>
+
+      <section id="open-questions">
+        <h2 class="section-header">20) Open Questions <a class="anchor-link" href="#open-questions">#</a></h2>
+        <ol>
+          <li>Pricing presentation: facility vs m²? How to display multi-year discount?</li>
+          <li>Exact monthly vs contract-term wording on public certificate.</li>
+          <li>Device-per-gateway cap for dense floors; guidance per topology.</li>
+          <li>Shipping bands for additional regions (e.g., Africa/India) and tax handling.</li>
+        </ol>
+      </section>
+
+      <section id="appendix">
+        <h2 class="section-header">Appendix A — Sample BoQ Lines (illustrative) <a class="anchor-link" href="#appendix">#</a></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Line Item</th>
+                <th style="text-align:right;">Amount (USD)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>IAQ sensors (IAC-LOR1-030)</td><td style="text-align:right;">4,185</td></tr>
+              <tr><td>Odor sensors (GS301)</td><td style="text-align:right;">8,835</td></tr>
+              <tr><td>Turbidity sensors</td><td style="text-align:right;">2,945</td></tr>
+              <tr><td>Cold Storage (CC3-LOR1-001)</td><td style="text-align:right;">556</td></tr>
+              <tr><td>LoRa gateways (WIC-LOR1-038)</td><td style="text-align:right;">12,885</td></tr>
+              <tr><td>Installation</td><td style="text-align:right;">1,025</td></tr>
+              <tr><td>Delivery</td><td style="text-align:right;">975</td></tr>
+              <tr><td>Certification</td><td style="text-align:right;">395</td></tr>
+              <tr><td><strong>Annual Connectivity</strong></td><td style="text-align:right;"><strong>2,475</strong></td></tr>
+              <tr><td><strong>Annual Software</strong></td><td style="text-align:right;"><strong>507</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="print-note">Printed from the Climacert-X PRD (v1.1). For the latest version, refer to the web source.</p>
+    </main>
+  </div>
+
+  <!-- Mermaid.js for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      try {
+        const prefersDark = theme === 'dark';
+        if (window.mermaid) {
+          window.mermaid.initialize({ startOnLoad: false, theme: prefersDark ? 'dark' : 'default', securityLevel: 'loose' });
+          window.mermaid.run({ querySelector: '.mermaid' });
+        }
+      } catch (e) { /* noop */ }
+    }
+    // Theme init based on preference or saved setting
+    const savedTheme = localStorage.getItem('theme');
+    const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(initialTheme);
+    localStorage.setItem('theme', initialTheme);
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme');
+      const next = cur === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    });
+  </script>
+
+  <!-- Build a dynamic Table of Contents -->
+  <script>
+    (function buildTOC() {
+      const toc = document.getElementById('toc');
+      if (!toc) return;
+      const headings = Array.from(document.querySelectorAll('#content h2, #content h3'));
+      const ul = document.createElement('ul');
+      let currentUl = ul;
+      let lastLevel = 2;
+      function slugify(text) {
+        return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      }
+      headings.forEach(h => {
+        const tag = h.tagName.toLowerCase();
+        const level = tag === 'h2' ? 2 : 3;
+        const raw = h.textContent.replace('#', '').trim();
+        const id = h.id || slugify(raw);
+        if (!h.id) h.id = id;
+        const a = document.createElement('a');
+        a.href = `#${id}`;
+        a.textContent = raw.replace(/\s+#$/, '');
+        const li = document.createElement('li');
+        li.appendChild(a);
+        if (level > lastLevel) {
+          const nested = document.createElement('ul');
+          currentUl.lastElementChild && currentUl.lastElementChild.appendChild(nested);
+          currentUl = nested;
+        } else if (level < lastLevel) {
+          currentUl = currentUl.parentElement.closest('ul') || ul;
+        }
+        currentUl.appendChild(li);
+        lastLevel = level;
+      });
+      toc.appendChild(ul);
+    })();
+
+    // Add anchor links to headings
+    (function addAnchors(){
+      const headings = document.querySelectorAll('#content h2, #content h3');
+      headings.forEach(h => {
+        const id = h.id;
+        if (!id) return;
+        const a = document.createElement('a');
+        a.href = `#${id}`;
+        a.className = 'anchor-link';
+        a.textContent = '#';
+        h.appendChild(a);
+      });
+    })();
+  </script>
+</body>
+</html>
