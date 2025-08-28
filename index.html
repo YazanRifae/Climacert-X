@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climacert-X Requirements</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1><span class="brand-name">Climacert-X</span></h1>
+                <div class="brand-subtitle">Requirements Document</div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#executive-summary" class="nav-link active"><i class="fas fa-star"></i> Executive Summary</a></li>
+                    <li><a href="#glossary" class="nav-link"><i class="fas fa-book"></i> Glossary</a></li>
+                    <li><a href="#roles" class="nav-link"><i class="fas fa-users"></i> Roles & Responsibilities</a></li>
+                    <li><a href="#journey" class="nav-link"><i class="fas fa-road"></i> End-to-End Journey</a></li>
+                    <li><a href="#pricing" class="nav-link"><i class="fas fa-tag"></i> Pricing & BoQ</a></li>
+                    <li><a href="#payments" class="nav-link"><i class="fas fa-credit-card"></i> Payments & Subscriptions</a></li>
+                    <li><a href="#admin" class="nav-link"><i class="fas fa-user-shield"></i> Admin Consoles</a></li>
+                    <li><a href="#facilities" class="nav-link"><i class="fas fa-building"></i> Facilities & Devices</a></li>
+                    <li><a href="#scoring" class="nav-link"><i class="fas fa-chart-line"></i> Scoring & Certification</a></li>
+                    <li><a href="#dashboards" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboards</a></li>
+                    <li><a href="#alerts" class="nav-link"><i class="fas fa-bell"></i> Alerts</a></li>
+                    <li><a href="#iot" class="nav-link"><i class="fas fa-network-wired"></i> IoT Integration</a></li>
+                    <li><a href="#tenant-users" class="nav-link"><i class="fas fa-user-friends"></i> Tenant Users</a></li>
+                    <li><a href="#data-model" class="nav-link"><i class="fas fa-database"></i> Data Model</a></li>
+                    <li><a href="#security" class="nav-link"><i class="fas fa-shield-alt"></i> Security</a></li>
+                    <li><a href="#templates" class="nav-link"><i class="fas fa-envelope"></i> Email Templates</a></li>
+                    <li><a href="#state-machines" class="nav-link"><i class="fas fa-project-diagram"></i> State Machines</a></li>
+                    <li><a href="#acceptance" class="nav-link"><i class="fas fa-clipboard-check"></i> Acceptance Criteria</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header-bar">
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-title">Climacert-X Requirements</div>
+            </div>
+
+            <div class="content-container">
+                <!-- Executive Summary -->
+                <section id="executive-summary" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-star"></i> Executive Summary</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <p>Climacert‑X certifies facilities using environmental and operational readings. The platform:</p>
+                        <ul>
+                            <li>Captures facility context via intake/chatbot and <strong>gates pricing</strong> until the user signs up.</li>
+                            <li>Computes a <strong>priced BoQ per facility</strong> based on its <strong>region</strong> (multi‑region supported), charging <em>one‑time costs</em> (OTC) at checkout while <strong>saving a payment method</strong> for renewals.</li>
+                            <li>Lets <strong>Super Admin / Admin</strong> run a per-facility <strong>Onboarding Wizard</strong>: map pin, <strong>IoT platform connect + hard‑lock</strong>, link devices→assets, verify first reading.</li>
+                            <li>Activates each <strong>facility subscription</strong> only when <strong>Admin completes onboarding</strong> <strong>AND</strong> <strong>Tenant confirms devices are received/installed</strong> (AND‑gate).</li>
+                            <li>Ingests readings via <strong>Webhook‑only v2</strong> (HMAC, idempotency, allow‑list), <strong>bucketizes</strong> (hourly, CO₂ 15‑min), computes <strong>monthly rollups</strong>, and publishes <strong>certification levels</strong>.</li>
+                            <li>Surfaces KPIs and trends on <strong>Dashboards</strong>, funnels operational/billing issues to <strong>Alerts</strong>, and enforces <strong>billing states</strong> (grace/suspended/reactivation pending) with clear UX rules.</li>
+                        </ul>
+                        
+                        <p class="highlight"><strong>Reading order:</strong> Roles → Journey → Pricing & BoQ → Payments → Onboarding → Facilities & Devices → Scoring → Dashboards → Alerts → IoT Integration → Tenant Users → Data & APIs → NFRs → Acceptance criteria suites → Test plan → Release checklist.</p>
+                    </div>
+                </section>
+
+                <!-- Glossary -->
+                <section id="glossary" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-book"></i> Glossary</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <ul>
+                            <li><strong>BoQ</strong> — Bill of Quantities; the items and prices required to deploy a facility.</li>
+                            <li><strong>OTC</strong> — One‑Time Charges (e.g., hardware, install, delivery).</li>
+                            <li><strong>FX snapshot</strong> — Reference rates used to display prices; invoices charge in the region currency.</li>
+                            <li><strong>Region</strong> — A pricing/tax grouping (each country belongs to exactly one region).</li>
+                            <li><strong>Hard‑lock (IoT)</strong> — After pairing a tenant with an IoT platform, switching is disallowed.</li>
+                            <li><strong>Bucketization</strong> — Aggregating readings into fixed time buckets (hourly; CO₂ may be 15‑min).</li>
+                            <li><strong>Monthly rollup</strong> — The historical source of truth for trends and certification calculations.</li>
+                            <li><strong>Provisional</strong> — First 7 days after start of scoring; counts in math but no certificate display.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Roles & Responsibilities -->
+                <section id="roles" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-users"></i> Roles & Responsibilities (RBAC)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>2.1 Actors</h3>
+                        <ul>
+                            <li><strong>Tenant Admin</strong> — Creates tenant at signup, pays OTC, owns invites, can view/manage billing, confirms "received/installed" during activation.</li>
+                            <li><strong>Tenant User</strong> — Facility‑scoped viewer/editor (per permissions). May confirm "received/installed" if allowed.</li>
+                            <li><strong>Super Admin</strong> — Full platform control: Customers, Pricing, IoT Platforms (connect/lock), Onboarding, Admin management.</li>
+                            <li><strong>Admin (scoped)</strong> — Created by Super Admin; limited to assigned customers/platforms. Onboards facilities & provides support.</li>
+                        </ul>
+
+                        <h3>2.2 Permissions (matrix excerpt)</h3>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Area</th>
+                                        <th>Tenant Admin</th>
+                                        <th>Tenant User</th>
+                                        <th>Admin (scoped)</th>
+                                        <th>Super Admin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>View Facilities/Devices</td>
+                                        <td>✓</td>
+                                        <td>✓*</td>
+                                        <td>✓</td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Invite Users</td>
+                                        <td>✓</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>View/Pay Billing</td>
+                                        <td>✓</td>
+                                        <td>Optional</td>
+                                        <td></td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Onboard Facility</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>✓</td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Set Platform Lock</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>C</td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manage Pricing/Regions</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Create Admins</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>✓</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>*Tenant User access is <strong>facility‑scoped</strong> and explicitly granted by the Tenant Admin.</p>
+                    </div>
+                </section>
+
+                <!-- End-to-End Journey -->
+                <section id="journey" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-road"></i> End-to-End Journey (E2E)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <ul class="steps-list">
+                            <li><strong>Lead → Intake.</strong> Collect facility counts, device families, goals. Pricing stays hidden (counts only).</li>
+                            <li><strong>Signup & Verification.</strong> Email/phone + OTP (e.g., 5‑minute TTL; throttled). Return to <strong>priced BoQ</strong>.</li>
+                            <li><strong>BoQ & Checkout.</strong> Per‑facility, group by region. <strong>OTC charged now</strong>, <strong>payment method saved</strong> for renewals, create <strong>pending_activation</strong> subscriptions (per facility).</li>
+                            <li><strong>Onboarding (Admin).</strong> Set map pin, connect <strong>one</strong> IoT platform and <strong>hard‑lock</strong> tenant pairing, add/link devices→assets, verify first valid reading.</li>
+                            <li><strong>Activation.</strong> Subscription becomes <strong>Active</strong> when <strong>Admin completes</strong> + <strong>Tenant confirms received/installed</strong>.</li>
+                            <li><strong>Scoring.</strong> Stability ~48h post‑activation, then bucketize; <strong>monthly rollups</strong> drive dashboards & certification.</li>
+                            <li><strong>Operate.</strong> Dashboards, alerts, reports; billing renewals enforce <strong>grace → suspended → reactivation pending</strong>.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Pricing & BoQ -->
+                <section id="pricing" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-tag"></i> Pricing & BoQ (multi-region, multi-facility)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>4.1 Regions & currencies</h3>
+                        <p>Every <strong>country</strong> maps to <strong>exactly one region</strong> (e.g., GCC, Europe, USA). Facilities inherit region from location. Display and invoice in region's <strong>native currency</strong>. Tenant currency may be shown as reference only.</p>
+
+                        <h3>4.2 SKU model</h3>
+                        <div class="code-example">
+                        <pre>SKU: {
+  sku: string,
+  family: enum(device|gateway|connectivity|software|license|installation|delivery|certification),
+  label: string,
+  unit: enum(each|bundle|month|year|meter|hour|...),
+  meta: { provider?: string, deviceFamily?: string, warranty?: string, ... }
+}</pre>
+                        </div>
+                        <p>Quantities derive from intake answers and facility sizing.</p>
+
+                        <h3>4.3 Pricing, taxes, delivery</h3>
+                        <ul>
+                            <li>Per‑region price lists (canonical storage, e.g., USD) + <strong>FX snapshot</strong> for display.</li>
+                            <li>Taxes at <strong>invoice time</strong> based on facility's region (VAT/GST rules and thresholds).</li>
+                            <li>Delivery/installation can be per‑facility or per‑region depending on logistics.</li>
+                        </ul>
+
+                        <h3>4.4 FX snapshot & quote validity</h3>
+                        <p>Display prices use the <strong>daily FX snapshot</strong>; invoices charge in region currency. The <strong>BoQ snapshot</strong> (items + extended totals) is stored at checkout and is <strong>immutable</strong> for <strong>30 days</strong> (configurable).</p>
+
+                        <h3>4.5 Multi‑facility UI (single page)</h3>
+                        <ul>
+                            <li>Group facilities by <strong>region</strong>; show <strong>per‑facility</strong> breakdown + <strong>region subtotal</strong>.</li>
+                            <li>Allow <strong>Monthly / Annual</strong> per facility; apply <strong>annual discounts</strong> within the region group if configured.</li>
+                            <li>Clearly separate <strong>OTC (now)</strong> vs <strong>Subscriptions (recurring)</strong>.</li>
+                        </ul>
+
+                        <h3>4.6 Acceptance — Pricing/BoQ</h3>
+                        <ul>
+                            <li><strong>Given</strong> anonymous intake, <strong>when</strong> viewing pricing, <strong>then</strong> show counts only (no pricing).</li>
+                            <li><strong>Given</strong> checkout success, <strong>when</strong> reopening a BoQ, <strong>then</strong> show immutable snapshot for 30 days.</li>
+                            <li><strong>Given</strong> multiple facilities in the same region, <strong>when</strong> toggling annual plan, <strong>then</strong> show a region group with updated subtotals.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Payments & Subscriptions -->
+                <section id="payments" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-credit-card"></i> Payments & Subscriptions</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>5.1 Checkout split</h3>
+                        <p>Charge <strong>OTC now</strong> (PaymentIntent) and <strong>save payment method</strong> (SetupIntent) for renewals. Create <strong>per‑facility</strong> subscriptions with state <code>pending_activation</code> and chosen cadence (Monthly/Annual).</p>
+
+                        <h3>5.2 Invoice grouping & proration</h3>
+                        <p>Invoices <strong>group by region</strong> (single currency per invoice). Co‑termination and prorations happen <strong>within a region</strong> only.</p>
+
+                        <h3>5.3 Renewal states</h3>
+                        <p>On failure → <strong>Grace</strong> (e.g., 7 days) → <strong>Suspended</strong>. When payment succeeds after suspension → <strong>Reactivation Pending</strong> until provider webhook arrives → <strong>Active</strong>.</p>
+
+                        <h3>5.4 Billing UX impact</h3>
+                        <ul>
+                            <li><strong>Grace</strong>: warning banner; "Pay Now" CTA.</li>
+                            <li><strong>Suspended</strong>: certificate/QR hidden, reports blocked, alerts visible read‑only.</li>
+                            <li><strong>Reactivation Pending</strong>: show spinner/info until confirmed.</li>
+                        </ul>
+
+                        <h3>5.5 Acceptance — Payments</h3>
+                        <ul>
+                            <li><strong>Given</strong> unpaid OTC, <strong>when</strong> Admin tries onboarding, <strong>then</strong> block action with "Complete Payment" CTA.</li>
+                            <li><strong>Given</strong> expired card, <strong>when</strong> renewal triggers, <strong>then</strong> show Grace banner and <strong>Pay Now</strong> flow.</li>
+                            <li><strong>Given</strong> suspension, <strong>when</strong> payment succeeds, <strong>then</strong> show Reactivation Pending then Active on webhook confirmation.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Super Admin Consoles & Onboarding -->
+                <section id="admin" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-user-shield"></i> Super Admin Consoles & Onboarding</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>6.1 Consoles</h3>
+                        <ul>
+                            <li><strong>Customers:</strong> facilities, BoQ state, subscriptions, onboarding status, billing state; filters.</li>
+                            <li><strong>Admin Management:</strong> create <strong>Admin (scoped)</strong>, scope to customers & platforms; full audit.</li>
+                            <li><strong>Platforms:</strong> connect providers, <strong>set hard‑lock</strong> per tenant.</li>
+                            <li><strong>Onboarding Wizard:</strong> per facility sequence (map pin → lock → devices→assets → first reading → Complete Onboarding).</li>
+                        </ul>
+
+                        <h3>6.2 Activation AND‑gate</h3>
+                        <p>A facility subscription moves from <code>pending_activation</code> → <strong>Active</strong> only when:</p>
+                        <ol>
+                            <li><strong>Admin</strong> presses <strong>Complete Onboarding</strong>, <strong>AND</strong></li>
+                            <li><strong>Tenant</strong> confirms <strong>"Devices received/installed"</strong> in the tenant UI.</li>
+                        </ol>
+
+                        <h3>6.3 Acceptance — Onboarding</h3>
+                        <ul>
+                            <li><strong>Given</strong> platform not locked, <strong>when</strong> Admin attempts activation, <strong>then</strong> block with "Lock Platform" step.</li>
+                            <li><strong>Given</strong> no first valid reading, <strong>when</strong> completing wizard, <strong>then</strong> prevent activation with inline errors.</li>
+                            <li><strong>Given</strong> Admin complete only, <strong>when</strong> tenant has not confirmed, <strong>then</strong> remain <code>pending_activation</code>.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Facilities, Assets & Devices -->
+                <section id="facilities" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-building"></i> Facilities, Assets & Devices (Tenant)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>7.1 Hierarchy & pages</h3>
+                        <p>Facility → Location → Space → Subspace.<br>
+                        Facility details: Overview, Hierarchy, <strong>Certification widget</strong>, Devices (with <strong>last reading</strong>), Alerts, Audit.</p>
+
+                        <h3>7.2 Devices list & drawer</h3>
+                        <p><strong>Columns:</strong> name, externalId, assigned asset, parameters, <strong>last reading</strong>, last seen, status.<br>
+                        <strong>Drawer:</strong> header, breadcrumb, last reading, last seen, parameters (human‑friendly mapping).</p>
+
+                        <h3>7.3 Actions & restrictions</h3>
+                        <p><strong>Report Issue</strong>, <strong>Request Replacement</strong>. Images uploaded are <strong>passed to support</strong>; not persisted long‑term.<br>
+                        <strong>No</strong> add‑device UI on tenant side. Device linking happens in <strong>Onboarding</strong>.</p>
+
+                        <h3>7.4 Billing banners</h3>
+                        <p>Respect billing states per <strong>§5.4</strong>; show precise restrictions & recovery CTAs.</p>
+
+                        <h3>7.5 Acceptance — Tenant UI</h3>
+                        <ul>
+                            <li><strong>Given</strong> device offline, <strong>when</strong> opening drawer, <strong>then</strong> show status + last seen (absolute + relative).</li>
+                            <li><strong>Given</strong> suspension, <strong>when</strong> viewing facility, <strong>then</strong> hide certificate/QR; block reports; keep alerts visible.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Scoring & Certification -->
+                <section id="scoring" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-chart-line"></i> Scoring & Certification</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>8.1 Pipeline</h3>
+                        <ol>
+                            <li><strong>Ingest</strong> readings via webhook (validate, dedupe, enqueue).</li>
+                            <li><strong>Normalize</strong> to facility timezone; validate schema & parameter mapping.</li>
+                            <li><strong>Bucketize</strong>: hourly; <strong>CO₂</strong> may use <strong>15‑min</strong> buckets.</li>
+                            <li><strong>Within‑evaluation</strong> vs template + shifts; <strong>quorum</strong> per asset.</li>
+                            <li><strong>Monthly rollups</strong> persisted as historical truth.</li>
+                        </ol>
+
+                        <h3>8.2 Math & thresholds (illustrative)</h3>
+                        <p>Facility score = mean of eligible assets (per device completeness gates).<br>
+                        Completeness gates: <strong>Silver ≥70%</strong>, <strong>Gold ≥80%</strong>, <strong>Platinum ≥90%</strong>; <strong>Cold/Water</strong> stricter (e.g., <strong>≥99%</strong>).<br>
+                        <strong>Vape KPI</strong>: <10% active‑day incidence (if applicable).</p>
+
+                        <h3>8.3 Timing & retention</h3>
+                        <p>After activation, require ~<strong>48h stability</strong>, then start scoring at next <strong>local midnight</strong>.<br>
+                        First <strong>7 days</strong>: <strong>Provisional</strong> (counts in math; certificate hidden).<br>
+                        Retain <strong>monthly rollups</strong> indefinitely; purge device×bucket after <strong>month close +7d</strong>.</p>
+
+                        <h3>8.4 Acceptance — Scoring</h3>
+                        <ul>
+                            <li><strong>Given</strong> newly activated facility, <strong>when</strong> next local midnight arrives, <strong>then</strong> scoring begins; first 7 days Provisional.</li>
+                            <li><strong>Given</strong> dashboard 12‑month trend, <strong>when</strong> fetching data, <strong>then</strong> use monthly rollups (not raw buckets).</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Dashboards -->
+                <section id="dashboards" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Dashboards (Tenant)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>9.1 Widgets</h3>
+                        <ul>
+                            <li><strong>Summary KPIs</strong> (devices online, alerts 30d, certification distribution, facilities, assets, subscriptions).</li>
+                            <li><strong>Trend (12‑month)</strong> from <strong>monthly rollups</strong>.</li>
+                            <li><strong>Devices vs Alerts (30d)</strong> operational view.</li>
+                            <li><strong>Top‑5 failing facilities</strong> by incidents or score.</li>
+                            <li><strong>Facility map</strong> with level‑colored pins and drill‑down.</li>
+                        </ul>
+
+                        <h3>9.2 Data sources</h3>
+                        <p>Historical → <strong>monthly rollups</strong>.<br>
+                        Near‑real‑time → device×bucket or <strong>lastReading</strong> (labeled).</p>
+
+                        <h3>9.3 UX</h3>
+                        <p>Filter by date ranges; explicit empty states ("No data for this date").<br>
+                        Drill‑downs route to facility/device/alerts screens.</p>
+
+                        <h3>9.4 Acceptance — Dashboards</h3>
+                        <ul>
+                            <li><strong>Given</strong> no data on date, <strong>when</strong> filtering to empty day, <strong>then</strong> show empty message.</li>
+                            <li><strong>Given</strong> pin/cell click, <strong>when</strong> drilling, <strong>then</strong> navigate to the correct detail page.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Alerts -->
+                <section id="alerts" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-bell"></i> Alerts (Unified)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>10.1 Categories</h3>
+                        <ul>
+                            <li><strong>Billing & Payments</strong> — renewal failed, grace expiring, suspended, reactivated.</li>
+                            <li><strong>Device & Certification</strong> — device offline, anomalies, thresholds at risk.</li>
+                        </ul>
+
+                        <h3>10.2 UX</h3>
+                        <p>Filter/search, pagination, date ranges.<br>
+                        <strong>Pay Now</strong> CTA on billing alerts → billing/checkout.<br>
+                        Device/cert alerts → deep link to facility/device.</p>
+
+                        <h3>10.3 Acceptance — Alerts</h3>
+                        <ul>
+                            <li><strong>Given</strong> billing hold, <strong>when</strong> opening Alerts, <strong>then</strong> show list + <strong>Pay Now</strong> CTA.</li>
+                            <li><strong>Given</strong> search/filter, <strong>when</strong> applied, <strong>then</strong> return paginated results respecting RBAC.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- IoT Integration -->
+                <section id="iot" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-network-wired"></i> IoT Integration — Webhook-only v2</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>11.1 Tenant↔Platform pairing</h3>
+                        <p><strong>One</strong> IoT platform per tenant; enforced via <strong>hard‑lock</strong> during onboarding.</p>
+
+                        <h3>11.2 Security</h3>
+                        <p><strong>HMAC signature</strong> (two modes):</p>
+                        <ul>
+                            <li><strong>A)</strong> <code>X‑Sig: hex(hmac(secret, raw_body))</code></li>
+                            <li><strong>B)</strong> <code>X‑Ts: unix</code>, <code>X‑Sig: hex(hmac(secret, ts + "." + raw_body))</code> and reject if |client‑server| > 5 minutes</li>
+                        </ul>
+                        <p><strong>Hardening:</strong> TLS only, size limit, IP allow‑list, schema validation, <strong>duplicate suppression</strong> (idempotency keys).</p>
+
+                        <h3>11.3 Behavior</h3>
+                        <p>Valid request → <strong>202 Accepted</strong> and queued.<br>
+                        Invalid signature/body → <strong>400/401/403</strong>.<br>
+                        Rate‑limit → <strong>429</strong> with backoff headers.</p>
+
+                        <h3>11.4 Event schema (example)</h3>
+                        <div class="code-example">
+                        <pre>{
+  "event_id": "prov-12345",         // idempotent unique id from provider
+  "device_id": "GW-ACME-001",
+  "facility_id": "FAC-001",
+  "observed_at": "2025-07-14T10:15:00Z",
+  "params": { "co2": 520, "temp": 23.4, "hum": 44.0 }
+}</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tenant Users -->
+                <section id="tenant-users" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-user-friends"></i> Tenant Users — Invites & Scope</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <p>Invite via email/phone; OTP accept with TTL (e.g., 24h).<br>
+                        Assign <strong>facility‑scoped</strong> permissions (view_devices, view_alerts, view_reports, view_subscriptions).<br>
+                        Enforce on every Facility/Device/Subscription API.<br>
+                        Audit all actions (who, what, when, where).</p>
+                    </div>
+                </section>
+
+                <!-- Data Model -->
+                <section id="data-model" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-database"></i> Data Model (high-level)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>13.1 Entities</h3>
+                        <div class="code-example">
+                        <pre><strong>Tenant</strong>(id, name, region_id, platform_id, billing_profile, created_at, …)
+<strong>Facility</strong>(id, tenant_id, name, geo, region_id, onboarding_state, billing_state, …)
+<strong>Subscription</strong>(id, facility_id, cadence, status, next_renewal, …)
+<strong>Device</strong>(id, external_id, facility_id, asset_id, template_id, lastReading, last_seen, status, …)
+<strong>Asset</strong>(id, facility_id, type, parent_id, name, …)
+<strong>Reading</strong>(id, device_id, observed_at, params(jsonb), source_id, …)
+<strong>Bucket</strong>(id, device_id, window_start, window_end, stats(jsonb), …)
+<strong>MonthlyRollup</strong>(id, facility_id, month, kpis(jsonb), certificate_level, …)
+<strong>Alert</strong>(id, facility_id, device_id?, type, severity, state, data, created_at, …)
+<strong>User</strong>(id, email/phone, role, tenant_id?, …) and <strong>UserFacility</strong>(user_id, facility_id, permissions)</pre>
+                        </div>
+
+                        <h3>13.2 Indexing & retention notes</h3>
+                        <p>Hot paths: <code>facility_id, month</code> on rollups; <code>device_id, window_start</code> on buckets; <code>facility_id, created_at</code> on alerts.<br>
+                        Retain buckets <strong>current month +7 days</strong>; keep monthly rollups indefinitely.</p>
+                    </div>
+                </section>
+
+                <!-- Security & Compliance -->
+                <section id="security" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-shield-alt"></i> Security & Compliance</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <ul>
+                            <li><strong>Transport:</strong> TLS 1.2+ everywhere; HSTS; modern cipher suites.</li>
+                            <li><strong>Auth:</strong> OTP for first‑time login; JWT or session with rotation; short TTLs.</li>
+                            <li><strong>Secrets:</strong> KMS‑backed, rotated; per‑tenant platform secrets; least‑privilege.</li>
+                            <li><strong>PII:</strong> Minimize; encrypt at rest; role‑based access to billing data.</li>
+                            <li><strong>Audit:</strong> Immutable audit log for admin actions and billing events.</li>
+                            <li><strong>DDoS/Rate‑limit:</strong> per‑IP and per‑tenant quotas; exponential backoff headers.</li>
+                            <li><strong>Idempotency:</strong> keys on webhook events and checkout actions.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Email & Notification Templates -->
+                <section id="templates" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-envelope"></i> Email & Notification Templates (samples)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <div class="card">
+                            <div class="card-header">Renewal failed (Grace start)</div>
+                            <p><strong>Subject:</strong> <code>Payment issue for {{facility_name}} — grace period started</code><br>
+                            <strong>Body:</strong> <code>We couldn't process your renewal. Your facility remains active for {{grace_days}} days. Please update your payment method.</code></p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">Suspended</div>
+                            <p><strong>Subject:</strong> <code>Service suspended for {{facility_name}}</code><br>
+                            <strong>Body:</strong> <code>Your certificate and reports are temporarily unavailable. Visit Billing to resolve.</code></p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">Onboarding complete (Admin)</div>
+                            <p><strong>Subject:</strong> <code>Confirm devices received/installed — {{facility_name}}</code><br>
+                            <strong>Body:</strong> <code>Please confirm receipt and installation to activate your subscription.</code></p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- State Machines -->
+                <section id="state-machines" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-project-diagram"></i> State Machines (reference)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>18.1 Subscription</h3>
+                        <div class="highlight">
+                            pending_activation -&gt; active -&gt; grace -&gt; suspended -&gt; reactivation_pending -&gt; active
+                        </div>
+
+                        <h3>18.2 Onboarding & Activation (AND‑gate)</h3>
+                        <div class="highlight">
+                            not_started -&gt; in_progress -&gt; admin_completed<br>
+                            admin_completed + tenant_confirmed -&gt; activated
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Acceptance Criteria -->
+                <section id="acceptance" class="section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-clipboard-check"></i> Acceptance Criteria Suites (condensed)</h2>
+                        <i class="fas fa-chevron-up section-toggle"></i>
+                    </div>
+                    <div class="section-content">
+                        <h3>20.1 Pricing/BoQ</h3>
+                        <p>G/W/T tables covering: hidden pricing pre‑signup; snapshot immutability; regional grouping; annual toggle.</p>
+
+                        <h3>20.2 Payments</h3>
+                        <p>G/W/T tables for OTC gating onboarding; grace banners; suspension restrictions; reactivation pending.</p>
+
+                        <h3>20.3 Onboarding</h3>
+                        <p>G/W/T tables for platform lock, first reading requirement, AND‑gate activation.</p>
+
+                        <h3>20.4 Devices & Tenant UI</h3>
+                        <p>G/W/T tables for offline status, last seen rendering, restricted features in suspension.</p>
+
+                        <h3>20.5 Scoring & Dashboards</h3>
+                        <p>G/W/T tables for start time, provisional window, rollup‑only history, empty states, drill‑downs.</p>
+
+                        <h3>20.6 Alerts</h3>
+                        <p>G/W/T tables for billing CTAs, RBAC‑aware deep links, pagination/filter behavior.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle sidebar on mobile
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const appContainer = document.querySelector('.app-container');
+            
+            sidebarToggle.addEventListener('click', function() {
+                appContainer.classList.toggle('sidebar-open');
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a.nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Close sidebar on mobile after clicking a link
+                    if (window.innerWidth < 992) {
+                        appContainer.classList.remove('sidebar-open');
+                    }
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Update active class
+                        document.querySelectorAll('a.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        // Expand the section if it's collapsed
+                        if (targetElement.classList.contains('collapsed')) {
+                            targetElement.classList.remove('collapsed');
+                        }
+                    }
+                });
+            });
+            
+            // Update active nav link on scroll
+            window.addEventListener('scroll', function() {
+                let current = '';
+                const sections = document.querySelectorAll('.section');
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    if (window.pageYOffset >= sectionTop) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                document.querySelectorAll('a.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            // Initialize collapsible sections
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const section = this.parentElement;
+                    const content = section.querySelector('.section-content');
+                    const chevron = this.querySelector('.section-toggle');
+                    
+                    // Toggle the collapsed class
+                    section.classList.toggle('collapsed');
+                    
+                    // Update accessibility attributes
+                    const isExpanded = !section.classList.contains('collapsed');
+                    this.setAttribute('aria-expanded', isExpanded);
+                    content.setAttribute('aria-hidden', !isExpanded);
+                });
+                
+                // Set initial ARIA attributes
+                const section = header.parentElement;
+                const content = section.querySelector('.section-content');
+                header.setAttribute('aria-expanded', 'true');
+                content.setAttribute('aria-hidden', 'false');
+                header.setAttribute('tabindex', '0');
+                header.setAttribute('role', 'button');
+            });
+            
+            // Add keyboard support for section headers
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
